@@ -1,8 +1,13 @@
 import { Api, JsonRpc } from "eosjs";
 interface NonceVerificationParams {
     waxAddress: string;
+    proof: {
+        transaction: any;
+    };
     nonce: string;
-    transaction: any;
+}
+export declare class InvalidProofError extends Error {
+    message: string;
 }
 export declare class WaxAuthServer {
     endpoint: JsonRpc;
@@ -10,6 +15,6 @@ export declare class WaxAuthServer {
     chainId: string;
     constructor(rpcUrl?: string, chainId?: string);
     generateNonce(): string;
-    verifyNonce({ waxAddress, nonce, transaction, }: NonceVerificationParams): Promise<boolean>;
+    verifyNonce({ waxAddress, proof, nonce }: NonceVerificationParams): Promise<boolean>;
 }
 export {};

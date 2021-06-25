@@ -1,7 +1,7 @@
 import * as waxjs from "@waxio/waxjs/dist";
 import { Api, JsonRpc } from "eosjs";
 import AnchorLink, { LinkSession, Signature } from "anchor-link";
-interface ProofTransaction {
+export interface ProofTransaction {
     transaction: {
         serializedTransaction: Uint8Array;
         signatures: Signature[];
@@ -46,4 +46,3 @@ export declare class WaxAuthClient {
     getProofWax(nonce: string): Promise<ProofTransaction>;
     getProofAnchor(nonce: string): Promise<ProofTransaction>;
 }
-export {};
