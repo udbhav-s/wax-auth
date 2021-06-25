@@ -10,13 +10,13 @@ interface NonceVerificationParams {
   transaction: any;
 }
 
-const bytesToHex = (bytes) => {
+const bytesToHex = (bytes: Uint8Array) => {
   return Array.prototype.map
     .call(bytes, (x) => ('00' + x.toString(16)).slice(-2))
     .join('')
     .toUpperCase();
 };
-const getInt64StrFromUint8Array = (ba) => {
+const getInt64StrFromUint8Array = (ba: Uint8Array) => {
   const hex = bytesToHex(ba);
   const bi = BigInt('0x' + hex);
   const max = BigInt('0x7FFFFFFFFFFFFFFF');
@@ -29,14 +29,14 @@ export class WaxAuthServer {
   chainId: string = '1064487b3cd1a897ce03ae5b6a865651747e2e152090f99c1d19d44e01aea5a4';
 
   constructor(rpcUrl?: string, chainId?: string) {
-    const endpoint = new JsonRpc(rpcUrl ?? 'https://wax.greymass.com', { fetch });
+    this.endpoint = new JsonRpc(rpcUrl ?? 'https://wax.greymass.com', { fetch });
     const signatureProvider = new JsSignatureProvider([]);
-    this.api = new Api({ rpc: endpoint, signatureProvider });
+    this.api = new Api({ rpc: this.endpoint, signatureProvider });
     if (chainId) this.chainId = chainId;
   }
 
   generateNonce(): string {
-    const nonce = blake2b(randomBytes(32), null, 32);
+    const nonce = blake2b(randomBytes(32), undefined, 32);
     return getInt64StrFromUint8Array(nonce);
   }
 
@@ -60,7 +60,7 @@ export class WaxAuthServer {
     ]);
 
     const recoveredKeys: string[] = [];
-    transaction.signatures.forEach((sigstr) => {
+    transaction.signatures.forEach((sigstr: string) => {
       const sig = Signature.fromString(sigstr);
       recoveredKeys.push(
         PublicKey.fromString(sig.recover(data).toString()).toLegacyString(),
@@ -88,6 +88,7 @@ export class WaxAuthServer {
         this.api.deserializeTransaction(uarr).actions,
       );
       const action = actions.find((a) => a.name === 'requestrand');
+      if (!action) return false;
       const transactionNonce = action.data.assoc_id;
 
       if (nonce !== transactionNonce) {
