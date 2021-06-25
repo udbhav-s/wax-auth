@@ -9,7 +9,6 @@ export interface ProofTransaction {
     serializedTransaction: Uint8Array;
     signatures: Signature[];
   };
-  nonce: string;
 }
 
 export class TransactionNotSignedError extends Error {
@@ -122,7 +121,6 @@ export class WaxAuthClient {
         ),
         signatures: tx.signatures,
       },
-      nonce,
     };
   }
 }

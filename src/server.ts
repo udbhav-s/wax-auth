@@ -3,10 +3,14 @@ import { blake2b } from "blakejs";
 import { randomBytes } from "crypto";
 import { Api, JsonRpc } from "eosjs";
 import fetch from "node-fetch";
+import { ProofTransaction } from "./client";
 
 interface NonceVerificationParams {
   waxAddress: string;
-  proof: any;
+  proof: {
+    transaction: any;
+  };
+  nonce: string;
 }
 
 const bytesToHex = (bytes: Uint8Array) => {
@@ -46,8 +50,9 @@ export class WaxAuthServer {
   async verifyNonce({
     waxAddress,
     proof,
+    nonce
   }: NonceVerificationParams): Promise<boolean> {
-    if (!proof.transaction || !proof.transaction.signatures.length || !proof.transaction.serializedTransaction || !proof.nonce) {
+    if (!proof.transaction || !proof.transaction.signatures.length || !proof.transaction) {
       throw new InvalidProofError();
     }
     // make buffer from transaction
@@ -96,7 +101,7 @@ export class WaxAuthServer {
       if (!action) return false;
       const transactionNonce = action.data.assoc_id;
 
-      if (proof.nonce !== transactionNonce) {
+      if (nonce !== transactionNonce) {
         return false;
       }
 
