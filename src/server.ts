@@ -1,0 +1,100 @@
+import { Signature, PublicKey, JsSignatureProvider } from "eosjs/dist/eosjs-jssig";
+import { blake2b } from "blakejs";
+import { randomBytes } from "crypto";
+import { Api, JsonRpc } from "eosjs";
+import fetch from "node-fetch";
+
+interface NonceVerificationParams {
+  waxAddress: string;
+  nonce: string;
+  transaction: any;
+}
+
+const bytesToHex = (bytes) => {
+  return Array.prototype.map
+    .call(bytes, (x) => ('00' + x.toString(16)).slice(-2))
+    .join('')
+    .toUpperCase();
+};
+const getInt64StrFromUint8Array = (ba) => {
+  const hex = bytesToHex(ba);
+  const bi = BigInt('0x' + hex);
+  const max = BigInt('0x7FFFFFFFFFFFFFFF');
+  return (bi % max).toString();
+};
+
+export class WaxAuthServer {
+  endpoint: JsonRpc;
+  api: Api;
+  chainId: string = '1064487b3cd1a897ce03ae5b6a865651747e2e152090f99c1d19d44e01aea5a4';
+
+  constructor(rpcUrl?: string, chainId?: string) {
+    const endpoint = new JsonRpc(rpcUrl ?? 'https://wax.greymass.com', { fetch });
+    const signatureProvider = new JsSignatureProvider([]);
+    this.api = new Api({ rpc: endpoint, signatureProvider });
+    if (chainId) this.chainId = chainId;
+  }
+
+  generateNonce(): string {
+    const nonce = blake2b(randomBytes(32), null, 32);
+    return getInt64StrFromUint8Array(nonce);
+  }
+
+  async verifyNonce({
+    waxAddress,
+    nonce,
+    transaction,
+  }: NonceVerificationParams): Promise<boolean> {
+    // make buffer from transaction
+    const arr = [];
+    for (const key in transaction.serializedTransaction) {
+      arr.push(transaction.serializedTransaction[key]);
+    }
+    const uarr = new Uint8Array(arr);
+    const buf = Buffer.from(uarr);
+
+    const data = Buffer.concat([
+      Buffer.from(this.chainId, 'hex'),
+      buf,
+      Buffer.from(new Uint8Array(32)),
+    ]);
+
+    const recoveredKeys: string[] = [];
+    transaction.signatures.forEach((sigstr) => {
+      const sig = Signature.fromString(sigstr);
+      recoveredKeys.push(
+        PublicKey.fromString(sig.recover(data).toString()).toLegacyString(),
+      );
+    });
+
+    const claimedUser = await this.endpoint.get_account(waxAddress);
+    if (claimedUser?.permissions) {
+      const claimedUserKeys: string[] = [];
+      claimedUser.permissions.forEach((perm) => {
+        perm.required_auth.keys.forEach((obj) => claimedUserKeys.push(obj.key));
+      });
+
+      let match = false;
+      recoveredKeys.forEach((rk) => {
+        claimedUserKeys.forEach((ck) => {
+          if (rk == ck) match = true;
+        });
+      });
+      if (!match) {
+        return false;
+      }
+
+      const actions = await this.api.deserializeActions(
+        this.api.deserializeTransaction(uarr).actions,
+      );
+      const action = actions.find((a) => a.name === 'requestrand');
+      const transactionNonce = action.data.assoc_id;
+
+      if (nonce !== transactionNonce) {
+        return false;
+      }
+
+      return true;
+    } else return false;
+  }
+}

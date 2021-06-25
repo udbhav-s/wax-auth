@@ -1,0 +1,29 @@
+{
+  "name": "wax-auth",
+  "version": "0.1.0",
+  "description": "Fast, costless OAuth-like authentication flow for the Wax blockchain",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "compile": "tsc -p tsconfig.json",
+    "prepublish": "npm run compile"
+  },
+  "keywords": [
+    "wax"
+  ],
+  "author": "Udbhav",
+  "license": "ISC",
+  "devDependencies": {
+    "@types/node": "^15.12.4",
+    "@types/node-fetch": "^2.5.10",
+    "typescript": "^4.3.4"
+  },
+  "dependencies": {
+    "@waxio/waxjs": "^0.0.15",
+    "anchor-link": "^3.2.3",
+    "anchor-link-browser-transport": "^3.1.3",
+    "blakejs": "^1.1.1",
+    "eosjs": "^22.0.0",
+    "node-fetch": "^2.6.1"
+  }
+}
