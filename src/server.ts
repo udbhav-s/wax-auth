@@ -6,8 +6,7 @@ import fetch from "node-fetch";
 
 interface NonceVerificationParams {
   waxAddress: string;
-  nonce: string;
-  transaction: any;
+  proof: any;
 }
 
 const bytesToHex = (bytes: Uint8Array) => {
@@ -22,6 +21,10 @@ const getInt64StrFromUint8Array = (ba: Uint8Array) => {
   const max = BigInt('0x7FFFFFFFFFFFFFFF');
   return (bi % max).toString();
 };
+
+export class InvalidProofError extends Error {
+  message = "Invalid proof body";
+}
 
 export class WaxAuthServer {
   endpoint: JsonRpc;
@@ -42,13 +45,15 @@ export class WaxAuthServer {
 
   async verifyNonce({
     waxAddress,
-    nonce,
-    transaction,
+    proof,
   }: NonceVerificationParams): Promise<boolean> {
+    if (!proof.transaction || !proof.transaction.signatures.length || !proof.transaction.serializedTransaction || !proof.nonce) {
+      throw new InvalidProofError();
+    }
     // make buffer from transaction
     const arr = [];
-    for (const key in transaction.serializedTransaction) {
-      arr.push(transaction.serializedTransaction[key]);
+    for (const key in proof.transaction.serializedTransaction) {
+      arr.push(proof.transaction.serializedTransaction[key]);
     }
     const uarr = new Uint8Array(arr);
     const buf = Buffer.from(uarr);
@@ -60,7 +65,7 @@ export class WaxAuthServer {
     ]);
 
     const recoveredKeys: string[] = [];
-    transaction.signatures.forEach((sigstr: string) => {
+    proof.transaction.signatures.forEach((sigstr: string) => {
       const sig = Signature.fromString(sigstr);
       recoveredKeys.push(
         PublicKey.fromString(sig.recover(data).toString()).toLegacyString(),
@@ -91,7 +96,7 @@ export class WaxAuthServer {
       if (!action) return false;
       const transactionNonce = action.data.assoc_id;
 
-      if (nonce !== transactionNonce) {
+      if (proof.nonce !== transactionNonce) {
         return false;
       }
 

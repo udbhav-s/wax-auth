@@ -4,11 +4,12 @@ import { JsSignatureProvider } from "eosjs/dist/eosjs-jssig";
 import AnchorLink, { LinkSession, Signature } from "anchor-link";
 import AnchorLinkBrowserTransport from "anchor-link-browser-transport";
 
-interface ProofTransaction {
+export interface ProofTransaction {
   transaction: {
     serializedTransaction: Uint8Array;
     signatures: Signature[];
-  }
+  };
+  nonce: string;
 }
 
 export class TransactionNotSignedError extends Error {
@@ -121,6 +122,7 @@ export class WaxAuthClient {
         ),
         signatures: tx.signatures,
       },
+      nonce,
     };
   }
 }

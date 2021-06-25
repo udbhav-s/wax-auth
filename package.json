@@ -1,7 +1,7 @@
 {
   "name": "wax-auth",
-  "version": "0.1.0",
-  "description": "Fast, costless OAuth-like authentication flow for the Wax blockchain",
+  "version": "0.1.1",
+  "description": "Fast, costless authentication flow for the Wax blockchain",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
