@@ -74,3 +74,16 @@ module.exports = {
     }
  },
 ```  
+
+# Methods
+### WaxAuthServer
+`new WaxAuthServer(rpcUrl?: string, chainId?: string)`
+`generateNonce(): string`: generates a random nonce for the client  
+`async verifyNonce({ waxAddress, proof, nonce }: NonceVerificationParams): Promise<boolean>`: verifies a nonce  
+
+### WaxAuthClient
+`new WaxAuthClient(tryAutoLogin: string[] | undefined = undefined, rpcUrl?: string, chainId?: string)`  
+`async loginWax(): Promise<string>`: Logs in with Wax Cloud Wallet and returns the user account  
+`async loginAnchor(appName?: string): Promise<string>`: Logs in with Anchor Wallet and returns the user account  
+`async getProofWax(nonce: string): Promise<ProofTransaction>`: Signs and returns a proof transaction  
+`async getProofAnchor(nonce: string): Promise<ProofTransaction>`: Signs and returns a proof transaction  
