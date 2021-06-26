@@ -25,5 +25,9 @@
     "anchor-link": "^3.2.3",
     "anchor-link-browser-transport": "^3.1.3",
     "eosjs": "^22.0.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/udbhav-s/wax-auth"
   }
 }

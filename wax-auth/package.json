@@ -22,5 +22,9 @@
     "blakejs": "^1.1.1",
     "eosjs": "^22.0.0",
     "node-fetch": "^2.6.1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/udbhav-s/wax-auth"
   }
 }
