@@ -1,13 +1,12 @@
 {
   "name": "wax-auth-client",
-  "version": "0.1.0",
+  "version": "0.1.7",
   "description": "Login client for wax-auth",
   "main": "lib/index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "compile": "tsc -p tsconfig.json",
-    "prepublish": "npm run compile",
-    "build": "esbuild lib/index.js --bundle --outfile=build/wax-auth-client.js"
+    "prepublish": "npm run compile"
   },
   "keywords": [
     "wax",
@@ -17,16 +16,14 @@
   "author": "Udbhav",
   "license": "ISC",
   "devDependencies": {
-    "esbuild": "^0.12.9",
-    "typescript": "^4.3.4"
+    "typescript": "^4.3.4",
+    "webpack": "^5.40.0",
+    "webpack-cli": "^4.7.2"
   },
   "dependencies": {
     "@waxio/waxjs": "^0.0.15",
     "anchor-link": "^3.2.3",
     "anchor-link-browser-transport": "^3.1.3",
     "eosjs": "^22.0.0"
-  },
-  "browser": {
-    "crypto": false
   }
 }

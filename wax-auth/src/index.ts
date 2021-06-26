@@ -2,18 +2,13 @@ import { Signature, PublicKey, JsSignatureProvider } from "eosjs/dist/eosjs-jssi
 import { blake2b } from "blakejs";
 import { Api, JsonRpc } from "eosjs";
 import fetch from "node-fetch";
-
-let randomBytes: (n: number) => Uint8Array;
-if (window) {
-  randomBytes = (n: number) => window.crypto.getRandomValues(new Uint8Array(n));
-} else {
-  randomBytes = require("crypto").getRandomBytes;
-} 
+import { randomBytes } from "crypto";
 
 interface NonceVerificationParams {
   waxAddress: string;
   proof: {
-    transaction: any;
+    serializedTransaction: Uint8Array;
+    signatures: string[];
   };
   nonce: string;
 }
@@ -57,13 +52,13 @@ export class WaxAuthServer {
     proof,
     nonce
   }: NonceVerificationParams): Promise<boolean> {
-    if (!proof.transaction || !proof.transaction.signatures.length || !proof.transaction) {
+    if (!proof || !proof.signatures.length || !proof.serializedTransaction) {
       throw new InvalidProofError();
     }
     // make buffer from transaction
     const arr = [];
-    for (const key in proof.transaction.serializedTransaction) {
-      arr.push(proof.transaction.serializedTransaction[key]);
+    for (const key in proof.serializedTransaction) {
+      arr.push(proof.serializedTransaction[key]);
     }
     const uarr = new Uint8Array(arr);
     const buf = Buffer.from(uarr);
@@ -75,7 +70,7 @@ export class WaxAuthServer {
     ]);
 
     const recoveredKeys: string[] = [];
-    proof.transaction.signatures.forEach((sigstr: string) => {
+    proof.signatures.forEach((sigstr: string) => {
       const sig = Signature.fromString(sigstr);
       recoveredKeys.push(
         PublicKey.fromString(sig.recover(data).toString()).toLegacyString(),

@@ -5,10 +5,8 @@ import AnchorLink, { LinkSession, Signature } from "anchor-link";
 import AnchorLinkBrowserTransport from "anchor-link-browser-transport";
 
 export interface ProofTransaction {
-  transaction: {
-    serializedTransaction: Uint8Array;
-    signatures: Signature[];
-  };
+  serializedTransaction: Uint8Array;
+  signatures: Signature[];
 }
 
 export class TransactionNotSignedError extends Error {
@@ -33,7 +31,7 @@ export class WaxAuthClient {
     );
 
     // eos api
-    this.eosEndpoint = new JsonRpc(rpcUrl ?? "https://wax.greymass.com");
+    this.eosEndpoint = new JsonRpc(rpcUrl ?? "https://wax.greymass.com", { fetch: window.fetch });
     const signatureProvider = new JsSignatureProvider([]);
     this.eosApi = new Api({ rpc: this.eosEndpoint, signatureProvider });
 
@@ -115,12 +113,10 @@ export class WaxAuthClient {
     const tx = await this.linkSession.transact(txData.data, txData.options);
 
     return {
-      transaction: {
-        serializedTransaction: this.eosApi.serializeTransaction(
-          JSON.parse(JSON.stringify(tx.transaction))
-        ),
-        signatures: tx.signatures,
-      },
+      serializedTransaction: this.eosApi.serializeTransaction(
+        JSON.parse(JSON.stringify(tx.transaction))
+      ),
+      signatures: tx.signatures,
     };
   }
 }

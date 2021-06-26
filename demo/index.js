@@ -13,11 +13,6 @@ app.use(session({
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 
-// routes
-app.get('/', (req, res) => {
-  res.sendFile('static/index.html', { root: __dirname });
-});
-
 app.get('/home', (req, res) => {
 	if (!req.session.loggedIn) {
 		res.send({ error: "Not logged in" });
@@ -83,9 +78,14 @@ app.get('/user', (req, res) => {
 		return;
 	} else {
 		res.send({
-			user: req.session.userAccount
+			user: req.session.waxAddress
 		});
 	}
 })
+
+// routes
+app.get('/', (req, res) => {
+  res.sendFile('static/index.html', { root: __dirname });
+});
 
 app.listen(process.env.PORT || 3000, () => console.log("App running"));

@@ -2,6 +2,8 @@ html, body {
   padding: 0;
   margin: 0;
   font-family: sans-serif;
+  color: white;
+  background-color: #222A3A;
 }
 
 .container {
@@ -34,7 +36,7 @@ html, body {
 
 button {
   border: 1px solid;
-  background: rgb(8, 114, 8);
+  background: #323D56;
   border-radius: 10px;
   font-size: 1.1rem;
   padding: 0.5rem;

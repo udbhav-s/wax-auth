@@ -2,7 +2,8 @@ import { Api, JsonRpc } from "eosjs";
 interface NonceVerificationParams {
     waxAddress: string;
     proof: {
-        transaction: any;
+        serializedTransaction: Uint8Array;
+        signatures: string[];
     };
     nonce: string;
 }

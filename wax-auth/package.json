@@ -1,6 +1,6 @@
 {
   "name": "wax-auth",
-  "version": "0.4.0",
+  "version": "0.4.2",
   "description": "Fast, costless authentication flow for the Wax blockchain",
   "main": "lib/index.js",
   "scripts": {

@@ -5,11 +5,24 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>wax-auth demo</title>
+  <link rel="stylesheet" href="css/style.css">
+  <script>
+    window.onload = async () => {
+      const title = document.getElementById("title");
+      try {
+        let response = await fetch('/user');
+        let user = (await response.json()).user;
+        title.textContent = `Logged in as ${user}`;
+      } catch(e) {
+        title.textContent = "Not logged in!";
+      }
+    }
+  </script>
 </head>
 <body>
   <div class="container">
     <div>
-      <h1>Logged in as ...</h1>
+      <h1 id="title">Loading...</h1>
     </div>
   </div>
 </body>

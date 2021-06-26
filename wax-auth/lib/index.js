@@ -59,13 +59,7 @@ var eosjs_jssig_1 = require("eosjs/dist/eosjs-jssig");
 var blakejs_1 = require("blakejs");
 var eosjs_1 = require("eosjs");
 var node_fetch_1 = __importDefault(require("node-fetch"));
-var randomBytes;
-if (window) {
-    randomBytes = function (n) { return window.crypto.getRandomValues(new Uint8Array(n)); };
-}
-else {
-    randomBytes = require("crypto").getRandomBytes;
-}
+var crypto_1 = require("crypto");
 var bytesToHex = function (bytes) {
     return Array.prototype.map
         .call(bytes, function (x) { return ('00' + x.toString(16)).slice(-2); })
@@ -98,7 +92,7 @@ var WaxAuthServer = /** @class */ (function () {
             this.chainId = chainId;
     }
     WaxAuthServer.prototype.generateNonce = function () {
-        var nonce = blakejs_1.blake2b(randomBytes(32), undefined, 32);
+        var nonce = blakejs_1.blake2b(crypto_1.randomBytes(32), undefined, 32);
         return getInt64StrFromUint8Array(nonce);
     };
     WaxAuthServer.prototype.verifyNonce = function (_a) {
@@ -108,12 +102,12 @@ var WaxAuthServer = /** @class */ (function () {
             return __generator(this, function (_b) {
                 switch (_b.label) {
                     case 0:
-                        if (!proof.transaction || !proof.transaction.signatures.length || !proof.transaction) {
+                        if (!proof || !proof.signatures.length || !proof.serializedTransaction) {
                             throw new InvalidProofError();
                         }
                         arr = [];
-                        for (key in proof.transaction.serializedTransaction) {
-                            arr.push(proof.transaction.serializedTransaction[key]);
+                        for (key in proof.serializedTransaction) {
+                            arr.push(proof.serializedTransaction[key]);
                         }
                         uarr = new Uint8Array(arr);
                         buf = Buffer.from(uarr);
@@ -123,7 +117,7 @@ var WaxAuthServer = /** @class */ (function () {
                             Buffer.from(new Uint8Array(32)),
                         ]);
                         recoveredKeys = [];
-                        proof.transaction.signatures.forEach(function (sigstr) {
+                        proof.signatures.forEach(function (sigstr) {
                             var sig = eosjs_jssig_1.Signature.fromString(sigstr);
                             recoveredKeys.push(eosjs_jssig_1.PublicKey.fromString(sig.recover(data).toString()).toLegacyString());
                         });
