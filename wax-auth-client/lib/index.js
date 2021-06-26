@@ -74,9 +74,9 @@ class WaxAuthClient {
             return waxAddress;
         });
     }
-    loginAnchor() {
+    loginAnchor(appName) {
         return __awaiter(this, void 0, void 0, function* () {
-            const identity = yield this.link.login("MonkeyBattle");
+            const identity = yield this.link.login(appName !== null && appName !== void 0 ? appName : "Login");
             this.linkSession = identity.session;
             this.waxAddress = identity.session.auth.actor.toString();
             return this.waxAddress;

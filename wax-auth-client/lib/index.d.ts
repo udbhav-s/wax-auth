@@ -17,7 +17,7 @@ export declare class WaxAuthClient {
     waxAddress: string;
     constructor(tryAutoLogin?: string[] | undefined, rpcUrl?: string, chainId?: string);
     loginWax(): Promise<string>;
-    loginAnchor(): Promise<string>;
+    loginAnchor(appName?: string): Promise<string>;
     getTransactionData(nonce: string): {
         data: {
             actions: {
