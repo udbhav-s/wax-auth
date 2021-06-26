@@ -1,10 +1,14 @@
 import { Signature, PublicKey, JsSignatureProvider } from "eosjs/dist/eosjs-jssig";
 import { blake2b } from "blakejs";
-import getRandomValues from "get-random-values";
 import { Api, JsonRpc } from "eosjs";
 import fetch from "node-fetch";
 
-let randomBytes = (n: number) => getRandomValues(new Uint8Array(n));
+let randomBytes: (n: number) => Uint8Array;
+if (window) {
+  randomBytes = (n: number) => window.crypto.getRandomValues(new Uint8Array(n));
+} else {
+  randomBytes = require("crypto").getRandomBytes;
+} 
 
 interface NonceVerificationParams {
   waxAddress: string;

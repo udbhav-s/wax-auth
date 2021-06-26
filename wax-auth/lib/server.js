@@ -57,10 +57,15 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.WaxAuthServer = exports.InvalidProofError = void 0;
 var eosjs_jssig_1 = require("eosjs/dist/eosjs-jssig");
 var blakejs_1 = require("blakejs");
-var get_random_values_1 = __importDefault(require("get-random-values"));
 var eosjs_1 = require("eosjs");
 var node_fetch_1 = __importDefault(require("node-fetch"));
-var randomBytes = function (n) { return get_random_values_1.default(new Uint8Array(n)); };
+var randomBytes;
+if (window) {
+    randomBytes = function (n) { return window.crypto.getRandomValues(new Uint8Array(n)); };
+}
+else {
+    randomBytes = require("crypto").getRandomBytes;
+}
 var bytesToHex = function (bytes) {
     return Array.prototype.map
         .call(bytes, function (x) { return ('00' + x.toString(16)).slice(-2); })
