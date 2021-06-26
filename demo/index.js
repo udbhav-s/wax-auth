@@ -81,7 +81,7 @@ app.get('/user', (req, res) => {
 			user: req.session.waxAddress
 		});
 	}
-})
+});
 
 // routes
 app.get('/', (req, res) => {
