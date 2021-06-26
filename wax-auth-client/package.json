@@ -1,6 +1,6 @@
 {
   "name": "wax-auth-client",
-  "version": "0.1.8",
+  "version": "0.1.9",
   "description": "Login client for wax-auth",
   "main": "lib/index.js",
   "scripts": {

@@ -56,8 +56,8 @@ export class WaxAuthClient {
     return waxAddress;
   }
 
-  async loginAnchor(): Promise<string> {
-    const identity = await this.link.login("MonkeyBattle");
+  async loginAnchor(appName?: string): Promise<string> {
+    const identity = await this.link.login(appName ?? "Login");
     this.linkSession = identity.session;
     this.waxAddress = identity.session.auth.actor.toString()
     return this.waxAddress;
