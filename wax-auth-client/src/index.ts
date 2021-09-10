@@ -1,12 +1,13 @@
 import * as waxjs from "@waxio/waxjs/dist";
 import { Api, JsonRpc } from "eosjs";
 import { JsSignatureProvider } from "eosjs/dist/eosjs-jssig";
-import AnchorLink, { LinkSession, Signature } from "anchor-link";
+import AnchorLink, { LinkSession, Signature, TransactResult } from "anchor-link";
 import AnchorLinkBrowserTransport from "anchor-link-browser-transport";
 
 export interface ProofTransaction {
   serializedTransaction: Uint8Array;
   signatures: Signature[];
+  transaction?: TransactResult;
 }
 
 export class TransactionNotSignedError extends Error {
@@ -107,7 +108,7 @@ export class WaxAuthClient {
     return transaction;
   }
 
-  async getProofAnchor(nonce: string): Promise<ProofTransaction> {
+  async getProofAnchor(nonce: string, withTx?: boolean): Promise<ProofTransaction> {
     if (!this.linkSession) throw new Error("Link Session not defined");
     const txData = this.getTransactionData(nonce);
     const tx = await this.linkSession.transact(txData.data, txData.options);
@@ -117,6 +118,7 @@ export class WaxAuthClient {
         JSON.parse(JSON.stringify(tx.transaction))
       ),
       signatures: tx.signatures,
+      transaction: withTx ? tx : undefined,
     };
   }
 }
