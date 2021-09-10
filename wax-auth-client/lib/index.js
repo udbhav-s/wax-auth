@@ -130,7 +130,7 @@ class WaxAuthClient {
             return {
                 serializedTransaction: this.eosApi.serializeTransaction(JSON.parse(JSON.stringify(tx.transaction))),
                 signatures: tx.signatures,
-                transaction: withTx ? tx : undefined,
+                transaction: withTx ? tx.transaction : undefined,
             };
         });
     }

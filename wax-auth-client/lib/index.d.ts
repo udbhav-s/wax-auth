@@ -1,10 +1,10 @@
 import * as waxjs from "@waxio/waxjs/dist";
 import { Api, JsonRpc } from "eosjs";
-import AnchorLink, { LinkSession, Signature, TransactResult } from "anchor-link";
+import AnchorLink, { LinkSession, Signature, Transaction } from "anchor-link";
 export interface ProofTransaction {
     serializedTransaction: Uint8Array;
     signatures: Signature[];
-    transaction?: TransactResult;
+    transaction?: Transaction;
 }
 export declare class TransactionNotSignedError extends Error {
     message: string;

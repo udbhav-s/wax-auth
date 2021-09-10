@@ -1,13 +1,13 @@
 import * as waxjs from "@waxio/waxjs/dist";
 import { Api, JsonRpc } from "eosjs";
 import { JsSignatureProvider } from "eosjs/dist/eosjs-jssig";
-import AnchorLink, { LinkSession, Signature, TransactResult } from "anchor-link";
+import AnchorLink, { LinkSession, Signature, Transaction } from "anchor-link";
 import AnchorLinkBrowserTransport from "anchor-link-browser-transport";
 
 export interface ProofTransaction {
   serializedTransaction: Uint8Array;
   signatures: Signature[];
-  transaction?: TransactResult;
+  transaction?: Transaction;
 }
 
 export class TransactionNotSignedError extends Error {
@@ -118,7 +118,7 @@ export class WaxAuthClient {
         JSON.parse(JSON.stringify(tx.transaction))
       ),
       signatures: tx.signatures,
-      transaction: withTx ? tx : undefined,
+      transaction: withTx ? tx.transaction : undefined,
     };
   }
 }
