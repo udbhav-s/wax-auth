@@ -121,7 +121,7 @@ class WaxAuthClient {
             return transaction;
         });
     }
-    getProofAnchor(nonce) {
+    getProofAnchor(nonce, withTx) {
         return __awaiter(this, void 0, void 0, function* () {
             if (!this.linkSession)
                 throw new Error("Link Session not defined");
@@ -130,6 +130,7 @@ class WaxAuthClient {
             return {
                 serializedTransaction: this.eosApi.serializeTransaction(JSON.parse(JSON.stringify(tx.transaction))),
                 signatures: tx.signatures,
+                transaction: withTx ? tx : undefined,
             };
         });
     }

@@ -1,9 +1,10 @@
 import * as waxjs from "@waxio/waxjs/dist";
 import { Api, JsonRpc } from "eosjs";
-import AnchorLink, { LinkSession, Signature } from "anchor-link";
+import AnchorLink, { LinkSession, Signature, TransactResult } from "anchor-link";
 export interface ProofTransaction {
     serializedTransaction: Uint8Array;
     signatures: Signature[];
+    transaction?: TransactResult;
 }
 export declare class TransactionNotSignedError extends Error {
     message: string;
@@ -42,5 +43,5 @@ export declare class WaxAuthClient {
         };
     };
     getProofWax(nonce: string): Promise<ProofTransaction>;
-    getProofAnchor(nonce: string): Promise<ProofTransaction>;
+    getProofAnchor(nonce: string, withTx?: boolean): Promise<ProofTransaction>;
 }
