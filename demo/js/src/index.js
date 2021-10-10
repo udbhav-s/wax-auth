@@ -50,7 +50,9 @@ window.onload = () => {
 
     try {
       if (loginMethod === "wax") proof = await auth.getProofWax(nonce);
-      else proof = await auth.getProofAnchor(nonce);
+      else proof = await auth.getProofAnchor(nonce, true);
+
+      console.log("Proof: ", proof);
     } catch (e) {
       if (e instanceof TransactionNotSignedError)
         alert("Transaction was not signed, please try again");
@@ -68,9 +70,10 @@ window.onload = () => {
         })
       });
 
-      window.location.href = "/home";
+      // window.location.href = "/home";
     } catch (e) {
       alert("Login failed");
+      throw e;
     }
   }
   document.getElementById("verify").onclick = verify;

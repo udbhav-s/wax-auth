@@ -11,7 +11,7 @@
   "license": "ISC",
   "dependencies": {
     "esbuild": "^0.12.9",
-    "wax-auth-client": "^0.1.9"
+    "wax-auth-client": "^0.1.11"
   },
   "browser": {
     "crypto": false
