@@ -69,16 +69,6 @@ await post("/verify", { proof });
 ### Client (webpack recommended)
 `npm install wax-auth-client`  
 
-If webpack cannot resolve the `crypto` module, add this to your `webpack.config.js`
-```js
-module.exports = {
-  resolve: {
-    fallback: {
-      crypto: false,
-    }
- },
-```  
-
 # Methods
 ### WaxAuthServer
 `new WaxAuthServer(rpcUrl?: string, chainId?: string)`  
