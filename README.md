@@ -66,7 +66,7 @@ await post("/verify", { proof });
 
 ### Server (Node)
 `npm install wax-auth`  
-### Client (webpack recommended)
+### Client
 `npm install wax-auth-client`  
 
 # Methods
