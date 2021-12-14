@@ -11,6 +11,9 @@
   "dependencies": {
     "express": "^4.17.1",
     "express-session": "^1.17.2",
+    "ual-anchor": "^1.1.2",
+    "ual-plainjs-renderer": "^0.3.0",
+    "universal-authenticator-library": "^0.3.0",
     "wax-auth": "^0.4.2"
   }
 }

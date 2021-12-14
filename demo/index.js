@@ -61,7 +61,7 @@ app.post('/verify', (req, res) => {
 
     if (valid) {
       req.session.loggedIn = true;
-      // res.redirect('/home');
+      res.redirect('/home');
     } else {
       res.send({ error: "Login failed, please try again"});
     }

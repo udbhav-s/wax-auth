@@ -10,8 +10,9 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@eosdacio/ual-wax": "^1.5.1",
     "esbuild": "^0.12.9",
-    "wax-auth-client": "^0.1.11"
+    "wax-auth-client": "file:../../wax-auth-client"
   },
   "browser": {
     "crypto": false

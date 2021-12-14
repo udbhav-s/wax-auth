@@ -1,80 +1,91 @@
-import { TransactionNotSignedError, WaxAuthClient } from "wax-auth-client";
+import { WaxAuthClient } from "wax-auth-client";
+import { Anchor } from "ual-anchor";
+import { Wax } from "@eosdacio/ual-wax";
+import { UALJs } from "ual-plainjs-renderer";
+
+const auth = new WaxAuthClient();
 
 let nonce;
+let loggedInUser;
 let waxAddress;
-let loginMethod;
 
-window.onload = () => {
-  const auth = new WaxAuthClient();
+const waxChain = {
+  chainId: "1064487b3cd1a897ce03ae5b6a865651747e2e152090f99c1d19d44e01aea5a4",
+  rpcEndpoints: [{
+    protocol: "https",
+    host: "wax.greymass.com",
+    port: "443",
+  }]
+};
 
-  const waxButton = document.getElementById("loginWax");
-  const anchorButton = document.getElementById("loginAnchor");
+const userCallback = async (users) => {
+  loggedInUser = users[0];
+  waxAddress = await loggedInUser.getAccountName();
 
-  const loginWax = async () => {
-    waxAddress = await auth.loginWax();
-    loginMethod = "wax";
-    getNonce();
-  }
-  waxButton.onclick = loginWax;
+  getNonce();
+}
 
-  const loginAnchor = async () => {
-    waxAddress = await auth.loginAnchor();
-    loginMethod = "anchor";
-    getNonce();
-  }
-  anchorButton.onclick = loginAnchor;
+const getNonce = async () => {
+  let response = await fetch('/getNonce', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({
+      waxAddress
+    })
+  });
 
-  const getNonce = async () => {
-    let response = await fetch('/getNonce', {
+  nonce = (await response.json()).nonce;
+
+  // make verify button visible
+  document.getElementById("ual-div").style.display = "none";
+  document.getElementById("verify").style.display = "inline-block";
+}
+
+const verify = async () => {
+  if (!nonce) return;
+
+  const tx = auth.getTransactionData(nonce, waxAddress);
+  const result = await loggedInUser.signTransaction(tx.data, tx.options);
+
+  const proof = { 
+    serializedTransaction: result.transaction.serializedTransaction,
+    signatures: result.transaction.signatures
+  };
+
+  try {
+    await fetch('/verify', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'
       },
       body: JSON.stringify({
-        waxAddress
+        proof
       })
     });
 
-    nonce = (await response.json()).nonce;
-
-    waxButton.style.display = "none";
-    anchorButton.style.display = "none";
-    // make verify button visible
-    document.getElementById("verify").style.display = "inline-block";
+    window.location.href = "/home";
+  } catch (e) {
+    alert("Login failed");
+    throw e;
   }
+}
 
-  const verify = async () => {
-    if (!nonce || !loginMethod) return;
+window.onload = () => {
+  const anchor = new Anchor([waxChain], { appName: "wax-auth-demo" });
+  const wax = new Wax([waxChain]);
 
-    let proof;
-
-    try {
-      if (loginMethod === "wax") proof = await auth.getProofWax(nonce);
-      else proof = await auth.getProofAnchor(nonce, true);
-
-      console.log("Proof: ", proof);
-    } catch (e) {
-      if (e instanceof TransactionNotSignedError)
-        alert("Transaction was not signed, please try again");
-      return;
+  const ual = new UALJs(
+    userCallback,
+    [waxChain],
+    "Wax Auth Demo",
+    [anchor, wax],
+    {
+      containerElement: document.getElementById("ual-div"),
     }
+  );
+  ual.init();
 
-    try {
-      await fetch('/verify', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({
-          proof
-        })
-      });
-
-      // window.location.href = "/home";
-    } catch (e) {
-      alert("Login failed");
-      throw e;
-    }
-  }
   document.getElementById("verify").onclick = verify;
 }

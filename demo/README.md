@@ -1,6 +1,12 @@
 # wax-auth demo
 
-To run:  
+Compile the locally linked wax-auth-client dependency:
+```
+cd ../wax-auth-client
+npm run compile
+``
+
+Run:  
 ```
 cd js
 npm install 
