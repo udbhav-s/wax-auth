@@ -1,4 +1,4 @@
-import * as waxjs from "@waxio/waxjs/dist";
+import { WaxJS } from "@waxio/waxjs/dist";
 import { Api, JsonRpc } from "eosjs";
 import AnchorLink, { LinkSession, Signature, TransactResult } from "anchor-link";
 export interface ProofTransaction {
@@ -10,13 +10,13 @@ export declare class TransactionNotSignedError extends Error {
     message: string;
 }
 export declare class WaxAuthClient {
-    wax: waxjs.WaxJS;
+    wax: WaxJS;
     link: AnchorLink;
     linkSession: LinkSession | undefined;
     eosEndpoint: JsonRpc;
     eosApi: Api;
     waxAddress: string;
-    constructor(tryAutoLogin?: string[] | undefined, rpcUrl?: string, chainId?: string);
+    constructor(tryAutoLogin?: boolean | undefined, rpcUrl?: string, chainId?: string);
     loginWax(): Promise<string>;
     loginAnchor(appName?: string): Promise<string>;
     getTransactionData(nonce: string): {

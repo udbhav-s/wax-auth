@@ -1,23 +1,4 @@
 "use strict";
-var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
-    if (k2 === undefined) k2 = k;
-    Object.defineProperty(o, k2, { enumerable: true, get: function() { return m[k]; } });
-}) : (function(o, m, k, k2) {
-    if (k2 === undefined) k2 = k;
-    o[k2] = m[k];
-}));
-var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
-    Object.defineProperty(o, "default", { enumerable: true, value: v });
-}) : function(o, v) {
-    o["default"] = v;
-});
-var __importStar = (this && this.__importStar) || function (mod) {
-    if (mod && mod.__esModule) return mod;
-    var result = {};
-    if (mod != null) for (var k in mod) if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
-    __setModuleDefault(result, mod);
-    return result;
-};
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
@@ -32,7 +13,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.WaxAuthClient = exports.TransactionNotSignedError = void 0;
-const waxjs = __importStar(require("@waxio/waxjs/dist"));
+const dist_1 = require("@waxio/waxjs/dist");
 const eosjs_1 = require("eosjs");
 const eosjs_jssig_1 = require("eosjs/dist/eosjs-jssig");
 const anchor_link_1 = __importDefault(require("anchor-link"));
@@ -48,7 +29,10 @@ class WaxAuthClient {
     constructor(tryAutoLogin = undefined, rpcUrl, chainId) {
         this.waxAddress = "";
         // wax
-        this.wax = new waxjs.WaxJS(rpcUrl !== null && rpcUrl !== void 0 ? rpcUrl : "https://wax.greymass.com", undefined, tryAutoLogin, false);
+        this.wax = new dist_1.WaxJS({
+            rpcEndpoint: rpcUrl !== null && rpcUrl !== void 0 ? rpcUrl : "https://wax.greymass.com",
+            tryAutoLogin,
+        });
         // eos api
         this.eosEndpoint = new eosjs_1.JsonRpc(rpcUrl !== null && rpcUrl !== void 0 ? rpcUrl : "https://wax.greymass.com", { fetch: window.fetch });
         const signatureProvider = new eosjs_jssig_1.JsSignatureProvider([]);

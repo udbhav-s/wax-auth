@@ -1,8 +1,9 @@
-import * as waxjs from "@waxio/waxjs/dist";
+import { WaxJS } from "@waxio/waxjs/dist";
 import { Api, JsonRpc } from "eosjs";
 import { JsSignatureProvider } from "eosjs/dist/eosjs-jssig";
 import AnchorLink, { LinkSession, Signature, TransactResult } from "anchor-link";
 import AnchorLinkBrowserTransport from "anchor-link-browser-transport";
+import { PushTransactionArgs } from "eosjs/dist/eosjs-rpc-interfaces";
 
 export interface ProofTransaction {
   serializedTransaction: Uint8Array;
@@ -15,21 +16,19 @@ export class TransactionNotSignedError extends Error {
 }
 
 export class WaxAuthClient {
-  wax: waxjs.WaxJS;
+  wax: WaxJS;
   link: AnchorLink;
   linkSession: LinkSession | undefined;
   eosEndpoint: JsonRpc;
   eosApi: Api;
   waxAddress: string = "";
 
-  constructor(tryAutoLogin: string[] | undefined = undefined, rpcUrl?: string, chainId?: string) {
+  constructor(tryAutoLogin: boolean | undefined = undefined, rpcUrl?: string, chainId?: string) {
     // wax
-    this.wax = new waxjs.WaxJS(
-      rpcUrl ?? "https://wax.greymass.com",
-      undefined,
+    this.wax = new WaxJS({
+      rpcEndpoint: rpcUrl ?? "https://wax.greymass.com",
       tryAutoLogin,
-      false
-    );
+    });
 
     // eos api
     this.eosEndpoint = new JsonRpc(rpcUrl ?? "https://wax.greymass.com", { fetch: window.fetch });
@@ -99,13 +98,13 @@ export class WaxAuthClient {
     const transaction = await this.wax.api.transact(
       txData.data,
       txData.options
-    );
+    ) as PushTransactionArgs;
 
     if (!transaction.signatures[0]) {
       throw new TransactionNotSignedError();
     }
 
-    return transaction;
+    return transaction as unknown as ProofTransaction;
   }
 
   async getProofAnchor(nonce: string, withTx?: boolean): Promise<ProofTransaction> {

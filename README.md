@@ -82,7 +82,7 @@ module.exports = {
 `async verifyNonce({ waxAddress, proof, nonce }: NonceVerificationParams): Promise<boolean>`: verifies a nonce  
 
 ### WaxAuthClient
-`new WaxAuthClient(tryAutoLogin: string[] | undefined = undefined, rpcUrl?: string, chainId?: string)`  
+`new WaxAuthClient(tryAutoLogin: boolean | undefined = undefined, rpcUrl?: string, chainId?: string)`  
 `async loginWax(): Promise<string>`: Logs in with Wax Cloud Wallet and returns the user account  
 `async loginAnchor(appName?: string): Promise<string>`: Logs in with Anchor Wallet and returns the user account  
 `async getProofWax(nonce: string): Promise<ProofTransaction>`: Signs and returns a proof transaction  
