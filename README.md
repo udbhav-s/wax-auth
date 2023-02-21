@@ -30,18 +30,19 @@ app.post('/getNonce', (req, res) => {
 });
 
 app.post('/verify', (req, res) => {
-  const valid = auth.verifyNonce({
+  auth.verifyNonce({
     waxAddress: req.session.waxAddress,
     proof: req.body.proof,
     nonce: req.session.nonce
+  })
+  .then((valid) => {
+    if (valid) {
+      req.session.loggedIn = true;
+      res.redirect('/home');
+    } else {
+      res.send({ error: "Login failed, please try again"});
+    }
   });
-
-  if (valid) {
-    req.session.loggedIn = true;
-    res.redirect('/home');
-  } else {
-    res.send({ error: "Login failed, please try again"});
-  }
 });
 ```
 
