@@ -52,24 +52,24 @@ app.post('/verify', (req, res) => {
 	}
 
   // verify proof
-  try {
-    const valid = auth.verifyNonce({
-      waxAddress: req.session.waxAddress,
-      proof: req.body.proof,
-      nonce: req.session.nonce
-    });
-
+  auth.verifyNonce({
+    waxAddress: req.session.waxAddress,
+    proof: req.body.proof,
+    nonce: req.session.nonce
+  })
+	.then((valid) => {
     if (valid) {
       req.session.loggedIn = true;
       res.redirect('/home');
     } else {
       res.send({ error: "Login failed, please try again"});
     }
-  } catch(e) {
+  })
+	.catch((e) => {
     res.send({
       error: "Invalid proof, please try again"
     });
-  }
+  });
 });
 
 app.get('/user', (req, res) => {
